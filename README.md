@@ -1,24 +1,58 @@
-# Joplin Plugin
+# Joplin Plugin - bytefield-svg
 
-This is a template to create a new Joplin plugin.
+This plugin allows you to create diagrams uing the syntax defined in [https://bytefield-svg.deepsymmetry.org](https://bytefield-svg.deepsymmetry.org).
+This type of diagram is usually used to describe network protocols, memory layouts, and other data structures.
 
-The main two files you will want to look at are:
+This plugin don't need an internet connection to work.
 
-- `/src/index.ts`, which contains the entry point for the plugin source code.
-- `/src/manifest.json`, which is the plugin manifest. It contains information such as the plugin a name, version, etc.
+## Install the plugin
 
-## Building the plugin
+### Automatic installation
 
-The plugin is built using Webpack, which creates the compiled code in `/dist`. A JPL archive will also be created at the root, which can use to distribute the plugin.
+Use the Joplin plugin manager to install it (`Joplin > Options > Plugins`).
+Search for `bytefield-svg`.
 
-To build the plugin, simply run `npm run dist`.
+### Manual installation
 
-The project is setup to use TypeScript, although you can change the configuration to use plain JavaScript.
+- Download the last release from this repository.
+- Open `Joplin > Options > Plugins > Install from File`
+- Select the jpl file you downloaded.
 
-## Updating the plugin framework
+# Markdown syntax
 
-To update the plugin framework, run `npm run update`.
+Use the markdown fence syntax to create a new bytefield-svg diagram.
+Inside this block you can use the syntax documented at [https://bytefield-svg.deepsymmetry.org](https://bytefield-svg.deepsymmetry.org).
 
-In general this command tries to do the right thing - in particular it's going to merge the changes in package.json and .gitignore instead of overwriting. It will also leave "/src" as well as README.md untouched.
+## Examples
 
-The file that may cause problem is "webpack.config.js" because it's going to be overwritten. For that reason, if you want to change it, consider creating a separate JavaScript file and include it in webpack.config.js. That way, when you update, you only have to restore the line that include your file.
+Syntax example:
+
+    ```bytefield
+    (draw-column-headers)
+    (draw-box "Address" {:span 4})
+    (draw-box "Size" {:span 2})
+    (draw-box 0 {:span 2})
+    (draw-gap "Payload")
+    (draw-bottom)
+    ```
+
+Rendering example:
+
+![Rendering example](./doc/example1.png)
+
+# Other funcitonalities
+
+## Menu shortcuts
+If you don't remember the syntax to create a bytefield-svg diagram you can use the templates in the tools menu.
+
+# Development
+If you want to contribute to this plugin you can find here some userful references:
+
+- [Joplin - Getting started with plugin development](https://joplinapp.org/api/get_started/plugins/)
+- [Joplin - Plugin API reference](https://joplinapp.org/api/references/plugin_api/classes/joplin.html)
+- [Joplin - Data API reference](https://joplinapp.org/api/references/rest_api/)
+- [Joplin - Plugin examples](https://github.com/laurent22/joplin/tree/dev/packages/app-cli/tests/support/plugins)
+- [Draw.io parameters](https://www.diagrams.net/doc/faq/supported-url-parameters)
+
+
+https://www.diagrams.net/blog/embedding-walkthrough
