@@ -28,6 +28,20 @@ function createTempFile(data: string): { fileId: string, filePath: string } {
     return { fileId, filePath }
 }
 
+function getThemeUi(sketch: boolean, settings: Settings): string {
+    let themeUi = ''
+    if (sketch) {
+        themeUi = 'sketch'
+    } else {
+        themeUi = settings.get('themeUi')
+        if (settings.get('themeDark') === true && themeUi === 'kennedy') {
+            themeUi = 'dark'
+        }
+    }
+    return themeUi
+}
+
+
 export class EditorDialog {
     private _handler: string = null
     private _settings: Settings = null
@@ -37,31 +51,24 @@ export class EditorDialog {
     }
 
     async init(): Promise<void> {
-        this._handler = await joplin.views.dialogs.create(Config.DialogId)
-        await joplin.views.dialogs.setFitToContent(this._handler, false)
-        await joplin.views.dialogs.addScript(this._handler, './dialog/DiagramEditor.js')
-        await joplin.views.dialogs.addScript(this._handler, './dialog/bootstrap.js')
-        await joplin.views.dialogs.addScript(this._handler, './dialog/drawioEmbed.js')
-        // TODO: test ESC and ENTER button that may trigger this dialog buttons
-        await joplin.views.dialogs.setButtons(this._handler, [
-            { id: 'ok', title: 'Save' },
-            { id: 'cancel', title: 'Close' },
-        ])
+        if (!this._handler) {
+            this._handler = await joplin.views.dialogs.create(Config.DialogId)
+            await joplin.views.dialogs.setFitToContent(this._handler, false)
+            await joplin.views.dialogs.addScript(this._handler, './dialog/DiagramEditor.js')
+            await joplin.views.dialogs.addScript(this._handler, './dialog/bootstrap.js')
+            await joplin.views.dialogs.addScript(this._handler, './dialog/drawioEmbed.js')
+            await joplin.views.dialogs.setButtons(this._handler, [
+                { id: 'ok', title: 'Save' },
+                { id: 'cancel', title: 'Close' },
+            ])
+        }
     }
 
     async open(format: DiagramFormat, sketch: boolean = false): Promise<void> {
         if (!this._handler) await this.init()
         await this._settings.read()
 
-        let themeUi = ''
-        if (sketch) {
-            themeUi = 'sketch'
-        } else {
-            themeUi = this._settings.get('themeUi')
-            if (this._settings.get('themeDark') === true && themeUi === 'kennedy') {
-                themeUi = 'dark'
-            }
-        }
+        const themeUi = getThemeUi(sketch, this._settings)
 
         const htmlContent = `
         <form name="main">

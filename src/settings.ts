@@ -70,7 +70,7 @@ export class Settings {
             public: true,
             advanced: false,
             label: 'Theme: Rough style',
-            description: 'Enable/disable the rough sketch style in the Sketch UI. https://www.diagrams.net/blog/rough-style.html',
+            description: 'Enable/disable the rough lines style when creating sketch diagrams. https://www.diagrams.net/blog/rough-style.html',
         },
         themeDark: {
             value: false,

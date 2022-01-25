@@ -73,6 +73,7 @@ joplin.plugins.register({
         /**
          * Messages handling
          */
+        // TODO: Implement edit diagram
         await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { id: string, content: string }) => {
             // console.log('PlantUML definition:', message)
 

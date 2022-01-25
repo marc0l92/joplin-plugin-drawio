@@ -10,7 +10,7 @@ function startDrawio() {
             'embed=1',
             'lang=' + settings.language,
             'drafts=1',
-            'rough=' + (settings.themeRough ? 1 : 0), // TODO: to test
+            'rough=' + (settings.themeRough ? 1 : 0),
             'dark=' + (settings.themeDark ? 1 : 0),
             'ui=' + themeUi,
             'spin=1',
