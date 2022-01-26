@@ -87,7 +87,6 @@ export class EditorDialog {
             const { fileId, filePath } = createTempFile(dialogResult.formData.main.diagram)
             const createdResource = await joplin.data.post(['resources'], null, { title: fileId }, [{ path: filePath }])
             console.log(createdResource)
-            // await joplin.commands.execute('insertText', `![${createdResource.title}](:/${createdResource.id})`)
             await joplin.commands.execute('insertText', `<drawio data-id="${createdResource.id}"/>`)
         }
     }

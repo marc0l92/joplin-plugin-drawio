@@ -2,6 +2,14 @@ import joplin from 'api'
 import { ContentScriptType, MenuItem, MenuItemLocation } from 'api/types'
 import { Settings } from './settings'
 import { DiagramFormat, EditorDialog } from './editorDialog'
+// import { sep } from 'path'
+
+interface IResourceFile {
+    attachmentFilename: string
+    body: Uint8Array
+    contentType: string
+    type: string
+}
 
 const Config = {
     ContentScriptId: 'drawio-content-script',
@@ -18,6 +26,7 @@ joplin.plugins.register({
     onStart: async function () {
         const settings = new Settings()
         const dialog = new EditorDialog(settings)
+        // const resourceDir = await joplin.settings.globalValue('resourceDir')
 
         // Clean and create cache folder
         dialog.clearDiskCache()
@@ -74,23 +83,26 @@ joplin.plugins.register({
          * Messages handling
          */
         // TODO: Implement edit diagram
-        await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { id: string, content: string }) => {
+        await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { resourceId: string }) => {
             // console.log('PlantUML definition:', message)
 
             let outputHtml = ''
-            // try {
-            //     const diagramHeader = await readFileContent(settings.get('diagramHeaderFile'))
-            //     request.content = addDiagramHeader(request.content, diagramHeader)
-            //     let diagram: Diagram = cache.getCachedObject(request.content)
-            //     if (!diagram) {
-            //         diagram = await plantUMLRenderer.execute(request.content)
-            //         cache.addCachedObject(request.content, diagram)
-            //         writeTempImage(request.id, diagram.blob, settings.get('renderingFormats'))
-            //     }
-            //     outputHtml += view.render(diagram)
-            // } catch (err) {
-            //     outputHtml += view.renderError(request.content, err)
-            // }
+            try {
+                const resourceFile: IResourceFile = await joplin.data.get(['resources', request.resourceId, 'file'], null)
+                console.log(resourceFile)
+                const bodyBase64 = Buffer.from(resourceFile.body).toString('base64')
+                outputHtml = `
+                <div class="flex-center">
+                    <img alt="Draw.io diagram: ${resourceFile.attachmentFilename}" src="data:${resourceFile.contentType};base64,${bodyBase64}" />
+                </div>
+                `
+                // TODO: Cache image in the temp folder
+                // const { fileId, filePath } = createTempFile(dialogResult.formData.main.diagram)
+                // TODO: Test what happen if i try to rendere a resource that is not an image like a PDF
+
+            } catch (err) {
+                return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
+            }
             return outputHtml
         })
     },
