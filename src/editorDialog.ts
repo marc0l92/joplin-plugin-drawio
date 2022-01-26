@@ -8,7 +8,7 @@ const fs = joplin.require('fs-extra')
 const Config = {
     DialogId: 'drawio-dialog',
     TempFolder: `${tmpdir}${sep}joplin-drawio-plugin${sep}`,
-    DataImageRegex: /^data:image\/(png|svg)(?:\+xml)?;base64,(.*)/,
+    DataImageRegex: /^data:image\/(?<extension>png|svg)(?:\+xml)?;base64,(?<blob>.*)/,
 }
 
 export enum DiagramFormat {
@@ -23,8 +23,8 @@ function createTempFile(data: string): { fileId: string, filePath: string } {
         throw new Error('Invalid image data')
     }
 
-    let filePath = `${Config.TempFolder}${fileId}.${matches[1]}`
-    fs.writeFile(filePath, matches[2], 'base64')
+    let filePath = `${Config.TempFolder}${fileId}.${matches.groups.extension}`
+    fs.writeFile(filePath, matches.groups.blob, 'base64')
     return { fileId, filePath }
 }
 

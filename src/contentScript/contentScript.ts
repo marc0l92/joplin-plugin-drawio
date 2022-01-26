@@ -8,6 +8,7 @@ const diagramsTempDir = `${tmpdir}${sep}joplin-drawio-plugin${sep}`
 const htmlTagRegExp = /<drawio +[^>]+? *\/?>/i
 const htmlTagName = 'drawio'
 const htmlAttributeName = 'data-id'
+const DataImageRegex = /^data:image\/(?<extension>png|svg)(?:\+xml)?;base64,(?<blob>.*)/
 
 
 function getDiagramId(content: string): string {
@@ -64,7 +65,7 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
                 });
                 `.replace(/"/g, '&quot;')
                 return `
-                <div class="drawio-container">
+                <div class="drawio-container" tabindex="-1">
                     <div id="drawio-body-${diagramId}" class="flex-center">
                         <object data="${diagramsTempDir}${diagramId}.svg" type="image/svg+xml"></object>
                         <object data="${diagramsTempDir}${diagramId}.png" type="image/png"></object>

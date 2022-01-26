@@ -84,7 +84,7 @@ joplin.plugins.register({
          */
         // TODO: Implement edit diagram
         await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { resourceId: string }) => {
-            // console.log('PlantUML definition:', message)
+            // console.log('Draw.io definition:', message)
 
             let outputHtml = ''
             try {
