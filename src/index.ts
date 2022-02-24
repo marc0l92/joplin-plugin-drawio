@@ -2,14 +2,7 @@ import joplin from 'api'
 import { ContentScriptType, MenuItem, MenuItemLocation } from 'api/types'
 import { Settings } from './settings'
 import { DiagramFormat, EditorDialog } from './editorDialog'
-// import { sep } from 'path'
-
-interface IResourceFile {
-    attachmentFilename: string
-    body: Uint8Array
-    contentType: string
-    type: string
-}
+import { clearDiskCache, getDiagramResource, writeTempFile } from './resources'
 
 const Config = {
     ContentScriptId: 'drawio-content-script',
@@ -29,10 +22,10 @@ joplin.plugins.register({
         // const resourceDir = await joplin.settings.globalValue('resourceDir')
 
         // Clean and create cache folder
-        dialog.clearDiskCache()
+        clearDiskCache()
 
         // Register settings
-        settings.register()
+        await settings.register()
 
         // Register command
         await joplin.commands.register({
@@ -40,7 +33,7 @@ joplin.plugins.register({
             label: 'Create new diagram PNG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.open(DiagramFormat.PNG)
+                await dialog.new(DiagramFormat.PNG)
             },
         })
         await joplin.commands.register({
@@ -48,7 +41,7 @@ joplin.plugins.register({
             label: 'Create new diagram SVG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.open(DiagramFormat.SVG)
+                await dialog.new(DiagramFormat.SVG)
             },
         })
         await joplin.commands.register({
@@ -56,7 +49,7 @@ joplin.plugins.register({
             label: 'Create new sketch PNG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.open(DiagramFormat.PNG, true)
+                await dialog.new(DiagramFormat.PNG, true)
             },
         })
         await joplin.commands.register({
@@ -64,7 +57,7 @@ joplin.plugins.register({
             label: 'Create new sketch SVG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.open(DiagramFormat.SVG, true)
+                await dialog.new(DiagramFormat.SVG, true)
             },
         })
 
@@ -82,28 +75,34 @@ joplin.plugins.register({
         /**
          * Messages handling
          */
-        // TODO: Implement edit diagram
-        await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { resourceId: string }) => {
-            // console.log('Draw.io definition:', message)
+        await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { diagramId: string, action: string }) => {
+            console.log('contentScripts.onMessage:', request)
 
-            let outputHtml = ''
-            try {
-                const resourceFile: IResourceFile = await joplin.data.get(['resources', request.resourceId, 'file'], null)
-                console.log(resourceFile)
-                const bodyBase64 = Buffer.from(resourceFile.body).toString('base64')
-                outputHtml = `
-                <div class="flex-center">
-                    <img alt="Draw.io diagram: ${resourceFile.attachmentFilename}" src="data:${resourceFile.contentType};base64,${bodyBase64}" />
-                </div>
-                `
-                // TODO: Cache image in the temp folder
-                // const { fileId, filePath } = createTempFile(dialogResult.formData.main.diagram)
-                // TODO: Test what happen if i try to rendere a resource that is not an image like a PDF
+            switch (request.action) {
+                case 'init':
+                    let outputHtml = ''
+                    try {
+                        const diagramResource = await getDiagramResource(request.diagramId)
+                        // TODO: Test PDF export
+                        writeTempFile(request.diagramId, diagramResource.body)
+                        outputHtml = `
+                        <div class="flex-center">
+                            <img alt="Draw.io diagram: ${request.diagramId}" src="${diagramResource.body}" />
+                        </div>
+                        `
+                        // TODO: Test what happen if i try to rendere a resource that is not an image like a PDF
 
-            } catch (err) {
-                return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
+                    } catch (err) {
+                        return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
+                    }
+                    return outputHtml
+                case 'edit':
+                    await dialog.edit(request.diagramId)
+                    return
+                default:
+                    console.error(request)
+                    return `Invalid action: ${request.action}`
             }
-            return outputHtml
         })
     },
 });

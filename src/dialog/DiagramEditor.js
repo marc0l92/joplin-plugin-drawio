@@ -266,6 +266,9 @@ DiagramEditor.prototype.createFrame = function (url, style) {
 
     return frame;
 };
+DiagramEditor.prototype.createWindow = function (url, style) {
+    return window.open(url, '_blank', '');
+};
 
 /**
  * Sets the status of the editor.

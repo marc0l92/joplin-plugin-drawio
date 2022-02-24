@@ -1,31 +1,14 @@
 import joplin from 'api'
+import { createDiagramResource, getDiagramResource, updateDiagramResource } from './resources'
 import { Settings } from './settings'
-import { v4 as uuidv4 } from 'uuid'
-import { tmpdir } from 'os'
-import { sep } from 'path'
-const fs = joplin.require('fs-extra')
 
 const Config = {
     DialogId: 'drawio-dialog',
-    TempFolder: `${tmpdir}${sep}joplin-drawio-plugin${sep}`,
-    DataImageRegex: /^data:image\/(?<extension>png|svg)(?:\+xml)?;base64,(?<blob>.*)/,
 }
 
 export enum DiagramFormat {
     PNG = 'data:image/png;base64,',
     SVG = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxcHgiIGhlaWdodD0iMXB4IiB2aWV3Qm94PSIwIDAgMSAxIiBjb250ZW50PSImbHQ7bXhmaWxlIGhvc3Q9JnF1b3Q7ZW1iZWQuZGlhZ3JhbXMubmV0JnF1b3Q7IG1vZGlmaWVkPSZxdW90OzIwMjItMDEtMjRUMDc6Mzk6MTAuMTE3WiZxdW90OyB0eXBlPSZxdW90O2VtYmVkJnF1b3Q7Jmd0OyZsdDtkaWFncmFtIGlkPSZxdW90O0k1RXAxcldJZlc0d0RfNXFQY280JnF1b3Q7IG5hbWU9JnF1b3Q7UGFnZS0xJnF1b3Q7Jmd0O2RaRk5ENE1nRElaL0RYZVV1SSt6Yy9PeWs0ZWRpWFJDZ3BZZ2kyNi9maHB3U3JaZFNIbjZscGUyaE9YdGVMSGN5Q3NLMENTbFlpVHNSTkwwc0Q5TzV3eWVIdXl5eklQR0t1RlJzb0pLdlNCQUd1aERDZWdqb1VQVVRwa1kxdGgxVUx1SWNXdHhpR1YzMUxHcjRVMXdwQ3VvYXE3aFMzWlR3c25RVnJaUmw2QWF1VGduTkdSYXZvZ0Q2Q1VYT0d3UUt3akxMYUx6VVR2bW9PZlpMWFB4ZGVjLzJjL0hMSFR1UjhFVXJHOVBsMmhCckhnRCZsdDsvZGlhZ3JhbSZndDsmbHQ7L214ZmlsZSZndDsiPjxkZWZzLz48Zy8+PC9zdmc+',
-}
-
-function createTempFile(data: string): { fileId: string, filePath: string } {
-    const fileId: string = uuidv4()
-    const matches = data.match(Config.DataImageRegex)
-    if (!matches) {
-        throw new Error('Invalid image data')
-    }
-
-    let filePath = `${Config.TempFolder}${fileId}.${matches.groups.extension}`
-    fs.writeFile(filePath, matches.groups.blob, 'base64')
-    return { fileId, filePath }
 }
 
 function getThemeUi(sketch: boolean, settings: Settings): string {
@@ -64,12 +47,10 @@ export class EditorDialog {
         }
     }
 
-    async open(format: DiagramFormat, sketch: boolean = false): Promise<void> {
+    async new(format: DiagramFormat, sketch: boolean = false): Promise<void> {
         if (!this._handler) await this.init()
-        await this._settings.read()
 
         const themeUi = getThemeUi(sketch, this._settings)
-
         const htmlContent = `
         <form name="main">
             <a href="#" onclick="startDrawio()">Click here to load draw.io...</a>
@@ -79,20 +60,36 @@ export class EditorDialog {
         </form>
         `
         await joplin.views.dialogs.setHtml(this._handler, htmlContent)
-
         const dialogResult = await joplin.views.dialogs.open(this._handler)
-        console.log(dialogResult)
+        console.log('dialogResult', dialogResult)
 
         if (dialogResult.id === 'ok') {
-            const { fileId, filePath } = createTempFile(dialogResult.formData.main.diagram)
-            const createdResource = await joplin.data.post(['resources'], null, { title: fileId }, [{ path: filePath }])
-            console.log(createdResource)
-            await joplin.commands.execute('insertText', `<drawio data-id="${createdResource.id}"/>`)
+            const diagramId = await createDiagramResource(dialogResult.formData.main.diagram, { sketch: sketch })
+            await joplin.commands.execute('insertText', `<drawio id="${diagramId}"/>`)
         }
     }
 
-    clearDiskCache(): void {
-        fs.rmdirSync(Config.TempFolder, { recursive: true })
-        fs.mkdirSync(Config.TempFolder, { recursive: true })
+    async edit(diagramId: string): Promise<void> {
+        if (!this._handler) await this.init()
+
+        const diagramResource = await getDiagramResource(diagramId)
+        console.log('diagramResource:', diagramResource)
+
+        const themeUi = getThemeUi(diagramResource.options.sketch, this._settings)
+        const htmlContent = `
+        <form name="main">
+            <a href="#" onclick="startDrawio()">Click here to load draw.io...</a>
+            <input type="hidden" id="settings" value='${JSON.stringify(this._settings.toObject())}' />
+            <input type="hidden" id="setting-theme-ui" value='${themeUi}' />
+            <input type="hidden" id="diagram" name="diagram" value="${diagramResource.body}">
+        </form>
+        `
+        await joplin.views.dialogs.setHtml(this._handler, htmlContent)
+        const dialogResult = await joplin.views.dialogs.open(this._handler)
+        console.log('dialogResult', dialogResult)
+
+        if (dialogResult.id === 'ok') {
+            await updateDiagramResource(diagramId, dialogResult.formData.main.diagram, diagramResource.options)
+        }
     }
 }
