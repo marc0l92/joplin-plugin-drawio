@@ -84,15 +84,15 @@ joplin.plugins.register({
                     try {
                         const diagramResource = await getDiagramResource(request.diagramId)
                         // TODO: Test PDF export
+                        // TODO: Resources are automatically delted by joplin if they are not used anymore in the notes
                         writeTempFile(request.diagramId, diagramResource.body)
                         outputHtml = `
                         <div class="flex-center">
                             <img alt="Draw.io diagram: ${request.diagramId}" src="${diagramResource.body}" />
                         </div>
                         `
-                        // TODO: Test what happen if i try to rendere a resource that is not an image like a PDF
-
                     } catch (err) {
+                        console.error('contentScript.onMessage:', err)
                         return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
                     }
                     return outputHtml

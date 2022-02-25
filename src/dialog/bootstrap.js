@@ -39,16 +39,13 @@ function dialogDone(data, draft, elt) {
     })
 }
 
-
-
-
 (function () {
-    console.log('Auto load drawio 1')
+    // console.log('Auto load drawio 1')
     startDrawio()
 })()
 
 // TODO: remove if the autoload 1 works
-setTimeout(() => {
-    console.log('Auto load drawio 2')
-    startDrawio()
-}, 200)
+// setTimeout(() => {
+//     console.log('Auto load drawio 2')
+//     startDrawio()
+// }, 200)
