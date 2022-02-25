@@ -38,9 +38,20 @@ export async function getDiagramResource(diagramId: string): Promise<{ body: str
     const resourceData = await joplin.data.get(['resources', diagramId, 'file'])
     console.log('getDiagramResource', resourceProperties, resourceData)
 
+    if (!resourceData.contentType.startsWith('image')) {
+        throw new Error('Invalid resource content type. The resource must be an image')
+    }
+
+    let options: IDiagramOptions = {}
+    try {
+        options = JSON.parse(resourceProperties.title)
+    } catch (e) {
+        console.warn('getDiagramResource - Option parsing failed:', e)
+    }
+
     return {
         body: `data:${resourceData.contentType};base64,${Buffer.from(resourceData.body).toString('base64')}`,
-        options: resourceProperties.title ? JSON.parse(resourceProperties.title) : {}
+        options: options
     }
 }
 
