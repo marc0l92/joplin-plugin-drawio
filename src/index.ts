@@ -101,7 +101,7 @@ joplin.plugins.register({
                     return
                 case 'preview':
                     // TODO: Test preview mode
-                    // TODO: Pan, export, 
+                    // TODO: Pan, export
                     await dialog.preview(request.diagramId)
                     return
                 default:

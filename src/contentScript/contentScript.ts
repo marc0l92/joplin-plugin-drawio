@@ -111,8 +111,6 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
                                 <div class="menu-options">
                                     <div class="menu-option"><input type="submit" id="drawio-menu-${diagramId}-edit" value="Edit" /></div>
                                     <div class="menu-option"><input type="submit" id="drawio-menu-${diagramId}-preview" value="Preview" /></div>
-                                    <div class="menu-option"><input type="submit" id="drawio-menu-${diagramId}-prevPage" value="Previous Page" /></div>
-                                    <div class="menu-option"><input type="submit" id="drawio-menu-${diagramId}-nextPage" value="Next Page" /></div>
                                     <div class="menu-option"><input type="submit" id="drawio-menu-${diagramId}-copyImage" value="Copy image" /></div>
                                 </div>
                             </div>

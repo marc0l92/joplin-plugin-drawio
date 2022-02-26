@@ -1,16 +1,15 @@
-# Joplin Plugin - bytefield-svg
+# Joplin Plugin - draw.io
 
-This plugin allows you to create diagrams uing the syntax defined in [https://bytefield-svg.deepsymmetry.org](https://bytefield-svg.deepsymmetry.org).
-This type of diagram is usually used to describe network protocols, memory layouts, and other data structures.
+This plugin allows you to create diagrams using the editor [diagrams.net](https://www.diagrams.net) (aka. draw.io).
 
-This plugin don't need an internet connection to work.
+This plugin needs an internet connection to work.
 
 ## Install the plugin
 
 ### Automatic installation
 
 Use the Joplin plugin manager to install it (`Joplin > Options > Plugins`).
-Search for `bytefield-svg`.
+Search for `draw.io`.
 
 ### Manual installation
 
@@ -18,35 +17,14 @@ Search for `bytefield-svg`.
 - Open `Joplin > Options > Plugins > Install from File`
 - Select the jpl file you downloaded.
 
-# Markdown syntax
+# Create new diagram
 
-Use the markdown fence syntax to create a new bytefield-svg diagram.
-Inside this block you can use the syntax documented at [https://bytefield-svg.deepsymmetry.org](https://bytefield-svg.deepsymmetry.org).
 
-## Examples
 
-Syntax example:
-
-    ```bytefield
-    (draw-column-headers)
-    (draw-box "Address" {:span 4})
-    (draw-box "Size" {:span 2})
-    (draw-box 0 {:span 2})
-    (draw-gap "Payload")
-    (draw-bottom)
-    ```
-
-Rendering example:
-
-![Rendering example](./doc/example1.png)
-
-# Other funcitonalities
-
-## Menu shortcuts
-If you don't remember the syntax to create a bytefield-svg diagram you can use the templates in the tools menu.
+# Other functionalities
 
 # Development
-If you want to contribute to this plugin you can find here some userful references:
+If you want to contribute to this plugin you can find here some useful references:
 
 - [Joplin - Getting started with plugin development](https://joplinapp.org/api/get_started/plugins/)
 - [Joplin - Plugin API reference](https://joplinapp.org/api/references/plugin_api/classes/joplin.html)
