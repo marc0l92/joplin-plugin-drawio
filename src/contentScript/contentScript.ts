@@ -53,23 +53,23 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
                     // TODO: Implement preview
                     // TODO: Improve support for html_block with another html_block in the extraText
                     const extraText = token.content.split('\n').slice(1).join('<br>')
-                    const initMessage = JSON.stringify({ diagramId: diagramId, action: 'init' })
-                    const editMessage = JSON.stringify({ diagramId: diagramId, action: 'edit' })
+                    const messages = {
+                        init: JSON.stringify({ diagramId: diagramId, action: 'init' }),
+                        edit: JSON.stringify({ diagramId: diagramId, action: 'edit' }),
+                        preview: JSON.stringify({ diagramId: diagramId, action: 'preview' }),
+                    }
                     const sendContentToJoplinPlugin = `
+                        let diagram = null;
                         // Configure context menu
                         document.getElementById('drawio-body-${diagramId}').addEventListener('mousedown', e => {
                             const menu = document.getElementById('drawio-menu-${diagramId}');
-                            if (e.button === 2) {
-                                menu.style.display = '';
-                            } else {
-                                menu.style.display = 'none';
-                            }
+                            menu.style.display = e.button === 2 ? '' : 'none';
                         });
                         document.getElementById('drawio-menu-${diagramId}-edit').addEventListener('click', async e => {
-                            const img = document.querySelector("#drawio-body-${diagramId}>div>*:first-child");
-                            if (img && img.tagName === 'IMG') {
-                                webviewApi.postMessage('${contentScriptId}', ${editMessage});
-                            }
+                            webviewApi.postMessage('${contentScriptId}', ${messages.edit});
+                        });
+                        document.getElementById('drawio-menu-${diagramId}-preview').addEventListener('click', async e => {
+                            webviewApi.postMessage('${contentScriptId}', ${messages.preview});
                         });
                         document.getElementById('drawio-menu-${diagramId}-copyImage').addEventListener('click', async e => {
                             const img = document.querySelector("#drawio-body-${diagramId}>div>*:first-child");
@@ -92,9 +92,10 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
                         });
 
                         // Send fence content to plugin
-                        webviewApi.postMessage('${contentScriptId}', ${initMessage}).then((response) => {
+                        webviewApi.postMessage('${contentScriptId}', ${messages.init}).then((response) => {
                             document.getElementById('drawio-body-${diagramId}').innerHTML = response;
                             document.getElementById('drawio-menu-${diagramId}').style = "";
+                            diagram = document.querySelector("#drawio-body-${diagramId}>div>*:first-child");
                         });
                         `.replace(/"/g, '&quot;')
                     outputHtml += `

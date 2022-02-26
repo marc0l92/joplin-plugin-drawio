@@ -1,7 +1,7 @@
 import joplin from 'api'
 import { ContentScriptType, MenuItem, MenuItemLocation } from 'api/types'
 import { Settings } from './settings'
-import { DiagramFormat, EditorDialog } from './editorDialog'
+import { EmptyDiagram, EditorDialog } from './editorDialog'
 import { clearDiskCache, getDiagramResource, writeTempFile } from './resources'
 
 const Config = {
@@ -33,7 +33,7 @@ joplin.plugins.register({
             label: 'Create new diagram PNG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.new(DiagramFormat.PNG)
+                await dialog.new(EmptyDiagram.PNG)
             },
         })
         await joplin.commands.register({
@@ -41,7 +41,7 @@ joplin.plugins.register({
             label: 'Create new diagram SVG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.new(DiagramFormat.SVG)
+                await dialog.new(EmptyDiagram.SVG)
             },
         })
         await joplin.commands.register({
@@ -49,7 +49,7 @@ joplin.plugins.register({
             label: 'Create new sketch PNG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.new(DiagramFormat.PNG, true)
+                await dialog.new(EmptyDiagram.PNG, true)
             },
         })
         await joplin.commands.register({
@@ -57,7 +57,7 @@ joplin.plugins.register({
             label: 'Create new sketch SVG',
             iconName: 'fa fa-pencil',
             execute: async () => {
-                await dialog.new(DiagramFormat.SVG, true)
+                await dialog.new(EmptyDiagram.SVG, true)
             },
         })
 
@@ -98,6 +98,11 @@ joplin.plugins.register({
                     return outputHtml
                 case 'edit':
                     await dialog.edit(request.diagramId)
+                    return
+                case 'preview':
+                    // TODO: Test preview mode
+                    // TODO: Pan, export, 
+                    await dialog.preview(request.diagramId)
                     return
                 default:
                     console.error(request)

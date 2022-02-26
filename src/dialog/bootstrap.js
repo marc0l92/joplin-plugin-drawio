@@ -22,7 +22,8 @@ function startDrawio() {
             'splash=0',
             'grid=' + (settings.grid ? 1 : 0),
             'pv=' + (settings.pageVisible ? 1 : 0), // TODO: when the page view is disabled the export command makes the diagram move
-            `ruler=` + (settings.ruler ? 1 : 0),
+            'ruler=' + (settings.ruler ? 1 : 0),
+            'lightbox=' + (themeUi === 'lightbox' ? 1 : 0),
         ]
         console.log(urlParams)
         editor = new DiagramEditor(null, settings.themeUi, dialogDone, null, urlParams)
@@ -40,7 +41,6 @@ function dialogDone(data, draft, elt) {
 }
 
 (function () {
-    // console.log('Auto load drawio 1')
     startDrawio()
 })()
 
