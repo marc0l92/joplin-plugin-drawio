@@ -19,9 +19,22 @@ Search for `draw.io`.
 
 # Create new diagram
 
+Use the tools menu to create a new diagram and paste it in the note.
 
+> The diagram will be inserted where the cursor is.
 
-# Other functionalities
+![Tools menu](./doc/tools_menu.png)
+
+You can create your diagram using 2 different type of file format:
+* PNG: raster format
+* SVG: vectorial format
+
+The sketch mode configures the diagram editor to simplify the hand drawing.
+
+# Settings
+
+![Settings](./doc/settings.png)
+
 
 # Development
 If you want to contribute to this plugin you can find here some useful references:
