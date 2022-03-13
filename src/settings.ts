@@ -8,7 +8,7 @@ interface SettingItems {
 
 export const SettingDefaults = {
     ui: 'kennedy',
-    themeUi: { kennedy: "Kennedy (Default)", min: "Minimal (Small screens and mobile optimized)", atlas: "Atlas (Business oriented)"},
+    themeUi: { kennedy: "Kennedy (Default)", min: "Minimal (Small screens and mobile optimized)", atlas: "Atlas (Business oriented)" },
     languages: {
         id: 'Bahasa Indonesia',
         ms: 'Bahasa Melayu',
@@ -46,6 +46,7 @@ export const SettingDefaults = {
         zh: '中文 (中国)',
         'zh-tw': '中文 (台灣)'
     },
+    defaultLanguage: 'en',
 }
 
 export class Settings {
@@ -82,7 +83,7 @@ export class Settings {
             description: 'Enable/disable the dark mode',
         },
         language: {
-            value: Object.keys(SettingDefaults.languages)[0],
+            value: SettingDefaults.defaultLanguage,
             type: SettingItemType.String,
             section: 'drawio.settings',
             public: true,
