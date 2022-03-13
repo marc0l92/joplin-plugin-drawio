@@ -82,7 +82,7 @@ export class Settings {
             description: 'Enable/disable the dark mode',
         },
         language: {
-            value: Object.keys(SettingDefaults.languages)[0],
+            value: 'English',
             type: SettingItemType.String,
             section: 'drawio.settings',
             public: true,
