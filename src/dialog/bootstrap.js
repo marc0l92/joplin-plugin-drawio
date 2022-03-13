@@ -8,7 +8,7 @@ function startDrawio() {
         console.log(settings)
         const urlParams = [
             'embed=1',
-            'lang=' + settings.language,
+            'lang=' + settings.languageUi,
             'drafts=1',
             'rough=' + (settings.themeRough ? 1 : 0),
             'dark=' + (settings.themeDark ? 1 : 0),

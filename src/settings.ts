@@ -46,6 +46,7 @@ export const SettingDefaults = {
         zh: '中文 (中国)',
         'zh-tw': '中文 (台灣)'
     },
+    // TODO: get default language from joplin settings
     defaultLanguage: 'en',
 }
 
@@ -82,7 +83,7 @@ export class Settings {
             label: 'Theme: Dark mode',
             description: 'Enable/disable the dark mode',
         },
-        language: {
+        languageUi: {
             value: SettingDefaults.defaultLanguage,
             type: SettingItemType.String,
             section: 'drawio.settings',
