@@ -13,6 +13,14 @@ const htmlTagRegExp = /<drawio +[^>]+? *\/?>/i
 const htmlTagName = 'drawio'
 const idAttributeName = 'id'
 
+function extractCodeFromIdAttribute(idAttribute: string): string {
+    const match = idAttribute.match(/^\]\(\:\/([A-Za-z0-9]+)\)$/)
+    if (match) {
+        return match[1]
+    }
+    return null
+}
+
 function htmlEscape(str: string): string {
     return str.replace(/</g, '< ') // TODO: improve richtext compatibility
 }
@@ -27,7 +35,8 @@ function getDiagramTags(content: string): IDiagramTag[] {
     for (const diagramHtml of diagramsHtml) {
         const diagramTag: IDiagramTag = {}
         if (diagramHtml.attributes.getNamedItem(idAttributeName) !== null) {
-            diagramTag.id = diagramHtml.attributes[idAttributeName].nodeValue
+            const diagramTagId = diagramHtml.attributes[idAttributeName].nodeValue
+            diagramTag.id = extractCodeFromIdAttribute(diagramTagId)
         }
         diagramsTag.push(diagramTag)
     }
@@ -49,8 +58,8 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
                 const diagramId = diagramTag.id
                 if (diagramId) {
                     // TODO: Redesign UI of right click menu
+                    // TODO: document right click menu in readme
                     // TODO: Implement next/previous page buttons
-                    // TODO: Implement preview
                     // TODO: Improve support for html_block with another html_block in the extraText
                     const extraText = token.content.split('\n').slice(1).join('<br>')
                     const messages = {
@@ -121,7 +130,7 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
                 } else {
                     outputHtml += `
                         <div class="drawio-container">
-                            <p><strong>Draw.io error:</strong> no attribute &quot;${idAttributeName}&quot; specified</p>
+                            <p><strong>Draw.io error:</strong> no valid attribute &quot;${idAttributeName}&quot; specified</p>
                         </div>
                         `
                 }

@@ -17,6 +17,13 @@ function generateId() {
     return uuidv4().replace(/-/g, '')
 }
 
+function buildTitle(options: any): string {
+    return 'drawio-' + JSON.stringify(options)
+}
+function parseTitle(title: string): any {
+    return JSON.parse(title.replace(/^drawio-/, ''))
+}
+
 export function clearDiskCache(): void {
     fs.rmdirSync(Config.TempFolder, { recursive: true })
     fs.mkdirSync(Config.TempFolder, { recursive: true })
@@ -44,7 +51,7 @@ export async function getDiagramResource(diagramId: string): Promise<{ body: str
 
     let options: IDiagramOptions = {}
     try {
-        options = JSON.parse(resourceProperties.title)
+        options = parseTitle(resourceProperties.title)
     } catch (e) {
         console.warn('getDiagramResource - Option parsing failed:', e)
     }
@@ -58,14 +65,16 @@ export async function getDiagramResource(diagramId: string): Promise<{ body: str
 export async function createDiagramResource(data: string, options: IDiagramOptions): Promise<string> {
     const diagramId = generateId()
     const filePath = await writeTempFile(diagramId, data)
-    const createdResource = await joplin.data.post(['resources'], null, { id: diagramId, title: JSON.stringify(options) }, [{ path: filePath }])
+    const createdResource = await joplin.data.post(['resources'], null, { id: diagramId, title: buildTitle(options) }, [{ path: filePath }])
     console.log('createdResource', createdResource)
     return diagramId
 }
 
 export async function updateDiagramResource(diagramId: string, data: string, options: IDiagramOptions): Promise<void> {
     const filePath = await writeTempFile(diagramId, data)
-    await joplin.data.delete(['resources', diagramId])
-    const createdResource = await joplin.data.post(['resources'], null, { id: diagramId, title: JSON.stringify(options) }, [{ path: filePath }])
+    // Do not delete the image before recreating it otherwise will be inserted in the deleted_items sqlite table
+    // await joplin.data.delete(['resources', diagramId])
+    // Creating a resource with the same id will replace the file of the previous one without touching the sqlite resource
+    const createdResource = await joplin.data.post(['resources'], null, { id: diagramId, title: buildTitle(options) }, [{ path: filePath }])
     console.log('createdResource', createdResource)
 }

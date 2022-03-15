@@ -76,7 +76,7 @@ joplin.plugins.register({
          * Messages handling
          */
         await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { diagramId: string, action: string }) => {
-            console.log('contentScripts.onMessage:', request)
+            console.log('contentScripts.onMessage Input:', request)
 
             switch (request.action) {
                 case 'init':
@@ -84,7 +84,6 @@ joplin.plugins.register({
                     try {
                         const diagramResource = await getDiagramResource(request.diagramId)
                         // TODO: Test PDF export
-                        // TODO: Resources are automatically delted by joplin if they are not used anymore in the notes
                         writeTempFile(request.diagramId, diagramResource.body)
                         outputHtml = `
                         <div class="flex-center">
@@ -92,7 +91,7 @@ joplin.plugins.register({
                         </div>
                         `
                     } catch (err) {
-                        console.error('contentScript.onMessage:', err)
+                        console.error('contentScripts.onMessage Error:', err)
                         return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
                     }
                     return outputHtml
@@ -105,7 +104,6 @@ joplin.plugins.register({
                     await dialog.preview(request.diagramId)
                     return
                 default:
-                    console.error(request)
                     return `Invalid action: ${request.action}`
             }
         })

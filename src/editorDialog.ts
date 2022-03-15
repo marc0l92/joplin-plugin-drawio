@@ -67,7 +67,7 @@ export class EditorDialog {
 
         if (dialogResult.id === 'ok') {
             const diagramId = await createDiagramResource(dialogResult.formData.main.diagram, { sketch: sketch })
-            await joplin.commands.execute('insertText', `<drawio id="${diagramId}"/>`)
+            await joplin.commands.execute('insertText', `<drawio id="](:/${diagramId})"/>`)
         }
     }
 
