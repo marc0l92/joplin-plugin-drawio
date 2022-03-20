@@ -31,6 +31,15 @@ You can create your diagram using 2 different type of file format:
 
 The sketch mode configures the diagram editor to simplify the hand drawing.
 
+# Context menu
+
+Right click on the diagram to open the context menu that allows you to:
+- Edit the image in the draw.io editor
+- Open the image in a larger dialog
+- Copy the image to the clipboard
+
+![Context menu](./doc/context_menu.png)
+
 # Settings
 
 ![Settings](./doc/settings.png)

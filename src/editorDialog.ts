@@ -1,6 +1,7 @@
 import joplin from 'api'
 import { createDiagramResource, getDiagramResource, updateDiagramResource } from './resources'
 import { Settings } from './settings'
+import { v4 as uuidv4 } from 'uuid'
 
 const Config = {
     DialogId: 'drawio-dialog',
@@ -44,17 +45,22 @@ export class EditorDialog {
     }
 
     async init(): Promise<void> {
-        if (!this._handler) {
-            this._handler = await joplin.views.dialogs.create(Config.DialogId)
-            await joplin.views.dialogs.setFitToContent(this._handler, false)
-            await joplin.views.dialogs.addScript(this._handler, './dialog/DiagramEditor.js')
-            await joplin.views.dialogs.addScript(this._handler, './dialog/bootstrap.js')
-            await joplin.views.dialogs.addScript(this._handler, './dialog/drawioEmbed.js')
-            await joplin.views.dialogs.setButtons(this._handler, [
-                { id: 'ok', title: 'Save' },
-                { id: 'cancel', title: 'Close' },
-            ])
+        if (this._handler) {
+            return
         }
+        this._handler = await joplin.views.dialogs.create(`${Config.DialogId}-${uuidv4()}`)
+        await joplin.views.dialogs.setFitToContent(this._handler, false)
+        await joplin.views.dialogs.addScript(this._handler, './dialog/DiagramEditor.js')
+        await joplin.views.dialogs.addScript(this._handler, './dialog/bootstrap.js')
+        await joplin.views.dialogs.addScript(this._handler, './dialog/drawioEmbed.js')
+        await joplin.views.dialogs.setButtons(this._handler, [
+            { id: 'ok', title: 'Save' },
+            { id: 'cancel', title: 'Close' },
+        ])
+    }
+
+    async reset(): Promise<void> {
+        this._handler = null
     }
 
     async new(emptyDiagram: EmptyDiagram, sketch: boolean = false): Promise<void> {

@@ -46,7 +46,6 @@ export const SettingDefaults = {
         zh: '中文 (中国)',
         'zh-tw': '中文 (台灣)'
     },
-    // TODO: get default language from joplin settings
     defaultLanguage: 'en',
 }
 
@@ -121,6 +120,33 @@ export class Settings {
             label: 'View: Ruler',
             description: 'Show/hide rulers',
         },
+        exportGrid: {
+            value: false,
+            type: SettingItemType.Bool,
+            section: 'drawio.settings',
+            public: true,
+            advanced: false,
+            label: 'Export: Grid',
+            description: 'Show/hide grid in the exported picture',
+        },
+        exportShadows: {
+            value: false,
+            type: SettingItemType.Bool,
+            section: 'drawio.settings',
+            public: true,
+            advanced: false,
+            label: 'Export: Shadows',
+            description: 'Show/hide Shadows in the exported picture',
+        },
+        exportTransparentBackground: {
+            value: true,
+            type: SettingItemType.Bool,
+            section: 'drawio.settings',
+            public: true,
+            advanced: false,
+            label: 'Export: Transparent background',
+            description: 'Enable/disable the transparent background in the exported picture',
+        },
     }
 
     // Checks on the settings
@@ -145,7 +171,7 @@ export class Settings {
     async register() {
         await joplin.settings.registerSection('drawio.settings', {
             label: 'Draw.io',
-            iconName: 'fa fa-project-diagram',
+            iconName: 'fa fa-pen',
             description: 'Drawio allows you to render and modify diagrams created with draw.io (aka diagrams.net). For more info on the plugin: https://github.com/marc0l92/joplin-plugin-drawio#readme',
         })
 

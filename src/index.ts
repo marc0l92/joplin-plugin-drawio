@@ -3,6 +3,7 @@ import { ContentScriptType, MenuItem, MenuItemLocation } from 'api/types'
 import { Settings } from './settings'
 import { EmptyDiagram, EditorDialog } from './editorDialog'
 import { clearDiskCache, getDiagramResource, writeTempFile } from './resources'
+import { ChangeEvent } from 'api/JoplinSettings'
 
 const Config = {
     ContentScriptId: 'drawio-content-script',
@@ -26,6 +27,10 @@ joplin.plugins.register({
 
         // Register settings
         await settings.register()
+        joplin.settings.onChange(async (event: ChangeEvent) => {
+            await settings.read(event)
+            dialog.reset()
+        })
 
         // Register command
         await joplin.commands.register({
@@ -83,7 +88,7 @@ joplin.plugins.register({
                     let outputHtml = ''
                     try {
                         const diagramResource = await getDiagramResource(request.diagramId)
-                        // TODO: Test PDF export
+                        // TODO HIGH: Test PDF export
                         writeTempFile(request.diagramId, diagramResource.body)
                         outputHtml = `
                         <div class="flex-center">
@@ -101,8 +106,8 @@ joplin.plugins.register({
                     await joplin.commands.execute('focusElement', 'noteBody')
                     return
                 case 'preview':
-                    // TODO: Test preview mode
-                    // TODO: Pan, export
+                    // TODO HIGH: Test preview mode
+                    // TODO HIGH: Pan, export
                     await dialog.preview(request.diagramId)
                     await joplin.commands.execute('focusElement', 'noteBody')
                     return
