@@ -94,14 +94,17 @@ joplin.plugins.register({
                         console.error('contentScripts.onMessage Error:', err)
                         return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
                     }
+                    await joplin.commands.execute('focusElement', 'noteBody')
                     return outputHtml
                 case 'edit':
                     await dialog.edit(request.diagramId)
+                    await joplin.commands.execute('focusElement', 'noteBody')
                     return
                 case 'preview':
                     // TODO: Test preview mode
                     // TODO: Pan, export
                     await dialog.preview(request.diagramId)
+                    await joplin.commands.execute('focusElement', 'noteBody')
                     return
                 default:
                     return `Invalid action: ${request.action}`
