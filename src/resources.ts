@@ -29,13 +29,14 @@ export function clearDiskCache(): void {
     fs.mkdirSync(Config.TempFolder, { recursive: true })
 }
 
-export async function writeTempFile(name: string, data: string): Promise<string> {
+export async function writeTempFile(name: string, data: string, filePath: string = null): Promise<string> {
     const matches = data.match(Config.DataImageRegex)
     if (!matches) {
         throw new Error('Invalid image data')
     }
-
-    let filePath = `${Config.TempFolder}${name}.${matches.groups.extension}`
+    if (!filePath) {
+        filePath = `${Config.TempFolder}${name}.${matches.groups.extension}`
+    }
     await fs.writeFile(filePath, matches.groups.blob, 'base64')
     return filePath
 }
@@ -71,10 +72,9 @@ export async function createDiagramResource(data: string, options: IDiagramOptio
 }
 
 export async function updateDiagramResource(diagramId: string, data: string, options: IDiagramOptions): Promise<void> {
-    const filePath = await writeTempFile(diagramId, data)
-    // Do not delete the image before recreating it otherwise will be inserted in the deleted_items sqlite table
-    // await joplin.data.delete(['resources', diagramId])
-    // Creating a resource with the same id will replace the file of the previous one without touching the sqlite resource
-    const createdResource = await joplin.data.post(['resources'], null, { id: diagramId, title: buildTitle(options) }, [{ path: filePath }])
-    console.log('createdResource', createdResource)
+    const resourcePath = await joplin.data.resourcePath(diagramId)
+    await joplin.commands.execute('startExternalEditing', diagramId)
+    await writeTempFile(diagramId, data, resourcePath)
+    await joplin.commands.execute('stopExternalEditing', diagramId)
+    console.log('createdResource', resourcePath)
 }
