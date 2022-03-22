@@ -4,6 +4,9 @@ This plugin allows you to create diagrams using the editor [diagrams.net](https:
 
 This plugin needs an internet connection to work.
 
+![Example1](./doc/example1.png)
+![Example2](./doc/example2.png)
+
 ## Install the plugin
 
 ### Automatic installation
