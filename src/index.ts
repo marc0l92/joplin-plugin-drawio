@@ -76,7 +76,7 @@ joplin.plugins.register({
             Config.ContentScriptId,
             './contentScript/contentScript.js',
         )
-
+        // TODO HIGH: Fix resources syncing and backup after changes
         /**
          * Messages handling
          */
