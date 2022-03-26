@@ -47,6 +47,7 @@ export const SettingDefaults = {
         'zh-tw': '中文 (台灣)'
     },
     defaultLanguage: 'en',
+    server: 'https://embed.diagrams.net/',
 }
 
 export class Settings {
@@ -147,6 +148,15 @@ export class Settings {
             label: 'Export: Transparent background',
             description: 'Enable/disable the transparent background in the exported picture',
         },
+        server: {
+            value: SettingDefaults.server,
+            type: SettingItemType.String,
+            section: 'drawio.settings',
+            public: true,
+            advanced: true,
+            label: 'Connection: Draw.io server',
+            description: 'Draw.io server to use. Default value: ' + SettingDefaults.server,
+        }
     }
 
     // Checks on the settings

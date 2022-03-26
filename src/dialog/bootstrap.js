@@ -29,6 +29,7 @@ function startDrawio() {
         ]
         // console.log(urlParams)
         editor = new DiagramEditor(null, settings.themeUi, dialogDone, null, urlParams)
+        editor.drawDomain = settings.server
         editor.editElement(document.getElementById('diagram'))
     }
 }
