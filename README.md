@@ -34,14 +34,15 @@ You can create your diagram using 2 different type of file format:
 
 The sketch mode configures the diagram editor to simplify the hand drawing.
 
-# Context menu
+# Edit diagram
 
-Right click on the diagram to open the context menu that allows you to:
-- Edit the image in the draw.io editor
-- Open the image in a larger dialog
-- Copy the image to the clipboard
+If the plugin detects that the image is a draw.io diagram it will show an edit button on the top right when your mouse hover on the image.
 
-![Context menu](./doc/context_menu.png)
+![Edit menu](./doc/edit_menu.png)
+
+The plugin identify an image as a diagram if the alternative text is drawio and if the resource title starts with `drawio-`.
+
+![Markdown example](./doc/markdown_example.png)
 
 # Settings
 
