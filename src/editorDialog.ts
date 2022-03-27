@@ -93,10 +93,10 @@ export class EditorDialog {
         if (dialogResult.id === 'ok') {
             const newDiagramId = await updateDiagramResource(diagramId, dialogResult.formData.main.diagram, diagramResource.options)
             const note = await joplin.workspace.selectedNote();
-            //TODO: selectedNote sometime returns the note before the update below
             if (note) {
                 const newBody = (note.body as string).replace(new RegExp(`!\\[drawio\\]\\(:\\/${diagramId}\\)`, 'gi'), diagramMarkdown(newDiagramId))
-                joplin.commands.execute("editor.setText", newBody);
+                await joplin.data.put(['notes', note.id], null, { body: newBody })
+                await joplin.commands.execute("editor.setText", newBody);
             }
         }
     }
