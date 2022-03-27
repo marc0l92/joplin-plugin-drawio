@@ -29,7 +29,7 @@ export function clearDiskCache(): void {
     fs.mkdirSync(Config.TempFolder, { recursive: true })
 }
 
-export async function writeTempFile(name: string, data: string, filePath: string = null): Promise<string> {
+async function writeTempFile(name: string, data: string, filePath: string = null): Promise<string> {
     const matches = data.match(Config.DataImageRegex)
     if (!matches) {
         throw new Error('Invalid image data')
@@ -77,4 +77,9 @@ export async function updateDiagramResource(diagramId: string, data: string, opt
     await writeTempFile(diagramId, data, resourcePath)
     await joplin.commands.execute('stopExternalEditing', diagramId)
     console.log('createdResource', resourcePath)
+}
+
+export async function isDiagramResource(diagramId: string): Promise<boolean> {
+    const resourceProperties = await joplin.data.get(['resources', diagramId])
+    return resourceProperties.title.startsWith('drawio-')
 }

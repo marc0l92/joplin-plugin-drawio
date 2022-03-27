@@ -8,7 +8,11 @@ interface SettingItems {
 
 export const SettingDefaults = {
     ui: 'kennedy',
-    themeUi: { kennedy: "Kennedy (Default)", min: "Minimal (Small screens and mobile optimized)", atlas: "Atlas (Business oriented)" },
+    themeUi: {
+        kennedy: "Kennedy (Default)",
+        min: "Minimal (Small screens and mobile optimized)",
+        atlas: "Atlas (Business oriented)",
+    },
     languages: {
         id: 'Bahasa Indonesia',
         ms: 'Bahasa Melayu',

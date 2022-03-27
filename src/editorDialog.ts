@@ -73,7 +73,7 @@ export class EditorDialog {
 
         if (dialogResult.id === 'ok') {
             const diagramId = await createDiagramResource(dialogResult.formData.main.diagram, { sketch: sketch })
-            await joplin.commands.execute('insertText', `<drawio id="](:/${diagramId})"/>`)
+            await joplin.commands.execute('insertText', `![drawio](:/${diagramId})`)
         }
     }
 
@@ -89,13 +89,5 @@ export class EditorDialog {
         if (dialogResult.id === 'ok') {
             await updateDiagramResource(diagramId, dialogResult.formData.main.diagram, diagramResource.options)
         }
-    }
-
-    async preview(diagramId: string): Promise<void> {
-        if (!this._handler) await this.init()
-
-        const diagramResource = await getDiagramResource(diagramId)
-        await joplin.views.dialogs.setHtml(this._handler, this.buildDialogHTML(diagramResource.body, 'lightbox'))
-        await joplin.views.dialogs.open(this._handler)
     }
 }

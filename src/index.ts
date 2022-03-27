@@ -2,7 +2,7 @@ import joplin from 'api'
 import { ContentScriptType, MenuItem, MenuItemLocation } from 'api/types'
 import { Settings } from './settings'
 import { EmptyDiagram, EditorDialog } from './editorDialog'
-import { clearDiskCache, getDiagramResource, writeTempFile } from './resources'
+import { clearDiskCache, isDiagramResource } from './resources'
 import { ChangeEvent } from 'api/JoplinSettings'
 
 const Config = {
@@ -83,36 +83,14 @@ joplin.plugins.register({
         await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { diagramId: string, action: string }) => {
             console.log('contentScripts.onMessage Input:', request)
 
+            // TODO HIGH: Test PDF export
             switch (request.action) {
-                case 'init':
-                    let outputHtml = ''
-                    try {
-                        const diagramResource = await getDiagramResource(request.diagramId)
-                        // TODO HIGH: Test PDF export
-                        writeTempFile(request.diagramId, diagramResource.body)
-                        outputHtml = `
-                        <div class="flex-center">
-                            <img alt="Draw.io diagram: ${request.diagramId}" src="${diagramResource.body}" />
-                        </div>
-                        `
-                    } catch (err) {
-                        console.error('contentScripts.onMessage Error:', err)
-                        return `<div class="flex-center"><span class="error-icon">X</span><span>Draw.io Error:</span><span>${err.message}</span></div>`
-                    }
-                    await joplin.commands.execute('focusElement', 'noteBody')
-                    return outputHtml
                 case 'edit':
                     await dialog.edit(request.diagramId)
                     await joplin.commands.execute('focusElement', 'noteBody')
                     return
-                case 'preview':
-                    // TODO HIGH: Test preview mode
-                    // TODO HIGH: Pan, export
-                    await dialog.preview(request.diagramId)
-                    await joplin.commands.execute('focusElement', 'noteBody')
-                    return
                 case 'check':
-                    return { isValid: true }
+                    return { isValid: await isDiagramResource(request.diagramId) }
                 default:
                     return `Invalid action: ${request.action}`
             }

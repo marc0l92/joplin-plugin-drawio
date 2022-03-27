@@ -25,7 +25,6 @@ function startDrawio() {
             // TODO LOW: when the page view is disabled the export command makes the diagram move
             `pv=${(settings.pageVisible ? 1 : 0)}`,
             `ruler=${(settings.ruler ? 1 : 0)}`,
-            `lightbox=${(themeUi === 'lightbox' ? 1 : 0)}`,
         ]
         // console.log(urlParams)
         editor = new DiagramEditor(null, settings.themeUi, dialogDone, null, urlParams)
