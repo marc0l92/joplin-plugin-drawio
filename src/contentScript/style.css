@@ -1,12 +1,7 @@
 .drawio-container {
-    color: #172b4d;
-    font-family: "Segoe UI", "Roboto", "Fira Sans", "Helvetica Neue", sans-serif;
-    font-size: 14px;
-    line-height: normal;
-    display: flex;
-    flex-direction: column;
-    outline: none;
     position: relative;
+    display: inline-block;
+    width: fit-content;
 }
 
 .drawio-container img,
@@ -17,75 +12,18 @@
     height: auto;
 }
 
-.drawio-container .flex-center {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    width: fit-content;
-}
-
-.drawio-container .flex-center > * {
-    margin-right: 5px;
-}
-
-.drawio-container .flex-center > *:last-child {
-    margin-right: 0;
-}
-
-/* Icons */
-
-.drawio-container .error-icon {
-    background: #b60c0c;
-    color: white;
-    text-align: center;
-    padding: 0 5px;
-}
-
-/* Context Menu */
-
-.drawio-container:active .menu,
-.drawio-container:focus .menu {
-    display: block;
-}
-
-.drawio-container .menu {
-    display: none;
-    width: fit-content;
-    box-shadow: 5px 5px 5px -1px rgba(0, 0, 0, 0.2);
+.drawio-container button {
     position: absolute;
-    border: 1px solid #eee;
-    background: #fff;
-    z-index: 10;
-    top: 0;
-    left: 0;
-}
-
-.drawio-container .menu-options {
-    padding: 3px 0;
-    margin: 0;
-}
-
-.drawio-container .menu-option {
-    padding: 0;
-    margin: 0;
-}
-
-.drawio-container .menu-option input {
-    background: none;
-    border: none;
-    font-size: 14px;
-    padding: 4px 15px;
-    margin: 0;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-    outline: none;
-}
-
-.drawio-container .menu-option:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.drawio-container .hidden {
+    top: 3px;
+    left: 3px;
     display: none;
+}
+
+.drawio-container:hover button {
+    display: block;
+    opacity: 0.5;
+}
+
+.drawio-container:hover button:hover {
+    opacity: 1;
 }

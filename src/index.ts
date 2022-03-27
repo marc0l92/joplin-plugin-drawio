@@ -111,6 +111,8 @@ joplin.plugins.register({
                     await dialog.preview(request.diagramId)
                     await joplin.commands.execute('focusElement', 'noteBody')
                     return
+                case 'check':
+                    return { isValid: true }
                 default:
                     return `Invalid action: ${request.action}`
             }
