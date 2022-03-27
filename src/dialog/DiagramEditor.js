@@ -281,7 +281,7 @@ DiagramEditor.prototype.setStatus = function (messageKey, modified) {
  * Handles the given message.
  */
 DiagramEditor.prototype.handleMessage = function (msg) {
-    console.log('handleMessage', msg);
+    // console.log('handleMessage', msg);
     if (msg.event == 'configure') {
         this.configureEditor();
     }

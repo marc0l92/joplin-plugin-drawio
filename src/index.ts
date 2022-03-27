@@ -76,14 +76,11 @@ joplin.plugins.register({
             Config.ContentScriptId,
             './contentScript/contentScript.js',
         )
-        // TODO HIGH: Fix resources syncing and backup after changes
         /**
          * Messages handling
          */
         await joplin.contentScripts.onMessage(Config.ContentScriptId, async (request: { diagramId: string, action: string }) => {
             console.log('contentScripts.onMessage Input:', request)
-
-            // TODO HIGH: Test PDF export
             switch (request.action) {
                 case 'edit':
                     await dialog.edit(request.diagramId)

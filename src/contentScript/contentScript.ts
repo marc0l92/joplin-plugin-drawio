@@ -5,7 +5,6 @@ const htmlTagRegExp = /^drawio$/i
 const idAttributeName = 'src'
 
 function extractCodeFromIdAttribute(idAttribute: string): string {
-    console.log('extractCodeFromIdAttribute', idAttribute)
     //:/dc918ec87077460fbdbb0986a91c4c9d
     const splitViewMatch = idAttribute.match(/^\:\/([A-Za-z0-9]+)/)
     if (splitViewMatch) {
@@ -38,8 +37,8 @@ function buildRenderer(contentScriptId: string, renderer: RenderRule) {
     return function (tokens, idx, options, env, self) {
         const token = tokens[idx]
         const defaultOutput = defaultRender(tokens, idx, options, env, self)
-        console.log('token', token)
-        console.log('defaultOutput', defaultOutput)
+        // console.log('token', token)
+        // console.log('defaultOutput', defaultOutput)
         if (htmlTagRegExp.test(token.content)) {
             const diagramId = extractCodeFromIdAttribute(getDiagramTagId(token))
             if (diagramId) {

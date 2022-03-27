@@ -22,7 +22,6 @@ function startDrawio() {
             'stealth=1',
             'splash=0',
             `grid=${(settings.grid ? 1 : 0)}`,
-            // TODO LOW: when the page view is disabled the export command makes the diagram move
             `pv=${(settings.pageVisible ? 1 : 0)}`,
             `ruler=${(settings.ruler ? 1 : 0)}`,
         ]
@@ -55,7 +54,6 @@ function dialogDone(data, draft, elt) {
     startDrawio()
 })()
 // Method 2
-// TODO LOW: remove if the auto load 1 works
 setTimeout(() => {
     // console.log('Auto load drawio 2')
     startDrawio()
