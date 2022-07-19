@@ -29,6 +29,17 @@ function DiagramEditor(config, ui, done, initialized, urlParams) {
             catch (e) {
                 console.error(e);
             }
+        } else if (self.exportFrame != null && evt.source == self.exportFrame.contentWindow &&
+            evt.data.length > 0) {
+            try {
+                var msg = JSON.parse(evt.data);
+                if (msg != null && msg.event == 'export') {
+                    self.setElementData(self.startElement, msg.data);
+                }
+            }
+            catch (e) {
+                console.error(e);
+            }
         }
     };
 };
@@ -142,6 +153,12 @@ DiagramEditor.prototype.startEditing = function (data, format, title) {
             this.getFrameUrl(),
             this.getFrameStyle());
         document.body.appendChild(this.frame);
+
+        this.exportFrame = this.createFrame(
+            this.getFrameUrl(),
+            'position: absolute; width:0; height:0; border:0;');
+        document.body.appendChild(this.exportFrame);
+
         this.setWaiting(true);
     }
 };
@@ -203,7 +220,11 @@ DiagramEditor.prototype.stopEditing = function () {
  */
 DiagramEditor.prototype.postMessage = function (msg) {
     if (this.frame != null) {
-        this.frame.contentWindow.postMessage(JSON.stringify(msg), '*');
+        if (msg && msg.action == 'export') {
+            this.exportFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
+        } else {
+            this.frame.contentWindow.postMessage(JSON.stringify(msg), '*');
+        } 
     }
 };
 
@@ -292,7 +313,8 @@ DiagramEditor.prototype.handleMessage = function (msg) {
         this.save(msg.xml, true, this.startElement);
     }
     else if (msg.event == 'export') {
-        this.setElementData(this.startElement, msg.data);
+        console.error('export in none export frame')
+        // this.setElementData(this.startElement, msg.data);
         // this.stopEditing();
         // this.xml = null;
     }
