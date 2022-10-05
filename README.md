@@ -1,5 +1,8 @@
 # Joplin Plugin - draw.io
 
+> WARNING: I moved my notes to Obsidian.md and I will not provide additional support for this plugin.
+> Pull request are welcome.
+
 This plugin allows you to create diagrams using the editor [diagrams.net](https://www.diagrams.net) (aka. draw.io).
 
 This plugin needs an internet connection to work.
