@@ -2,11 +2,15 @@ import joplin from 'api'
 import { ContentScriptType, MenuItem, MenuItemLocation } from 'api/types'
 import { Settings } from './settings'
 import { EmptyDiagram, EditorDialog } from './editorDialog'
-import { clearDiskCache, isDiagramResource } from './resources'
+import { isDiagramResource } from './resources'
 import { ChangeEvent } from 'api/JoplinSettings'
+import { tmpdir } from 'os'
+import { sep } from 'path'
+const fs = joplin.require('fs-extra')
 
 const Config = {
     ContentScriptId: 'drawio-content-script',
+    DiagramsCacheFolder: `${tmpdir}${sep}joplin-drawio-plugin${sep}`,
 }
 
 const CommandsId = {
@@ -14,6 +18,11 @@ const CommandsId = {
     NewDiagramSvg: 'drawio-new-diagram-svg',
     NewSketchPng: 'drawio-new-sketch-png',
     NewSketchSvg: 'drawio-new-sketch-svg',
+}
+
+// new clearDiskCache function
+function clearDiskCache(): void {
+    fs.emptyDirSync(Config.DiagramsCacheFolder)
 }
 
 joplin.plugins.register({
