@@ -56,7 +56,6 @@ export class EditorDialog {
         await joplin.views.dialogs.setFitToContent(this._handler, false)
         await joplin.views.dialogs.addScript(this._handler, './dialog/DiagramEditor.js')
         await joplin.views.dialogs.addScript(this._handler, './dialog/bootstrap.js')
-        await joplin.views.dialogs.addScript(this._handler, './dialog/drawioEmbed.js')
         await joplin.views.dialogs.setButtons(this._handler, [
             { id: 'ok', title: 'Save' },
             { id: 'cancel', title: 'Close' },
